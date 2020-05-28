@@ -27,7 +27,6 @@ data = data.replace(' }\n', ' },\n')
 data = data.replace(' },\n	]',' }\n	]')
 data = json.loads(data)
 pathData = data['pathData']
-pathData = 'R' + pathData
 pathList = []
 for i in range(len(pathData) - 1):
     try:
@@ -37,13 +36,45 @@ for i in range(len(pathData) - 1):
     except KeyError as e:
         print('Warning: Unsupported angle! ({})'.format(e))
         pathList.append(180)
-actions = []
+actions = data['actions']
 tmp = 0
+direction = 0
 for i in pathList:
     if pathList[tmp]/pathList[tmp-1] != 1:
-        actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp]/pathList[tmp-1] },)
+        if direction % 2 == 0:
+            angle = pathList[tmp]
+        else:
+            angle = (((359 - pathList[tmp]) % 360) + 1)
+        if angle <= 180:
+            if direction % 2 == 0:
+                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp]/pathList[tmp-1] },) # 기본모드
+            else:
+                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / (((359 - pathList[tmp-1]) % 360) + 1) },)
+            twirl = 0
+        else:
+            print(tmp)
+            actions.append({ "floor": tmp + 1, "eventType": "Twirl" },)
+            if direction % 2 == 0:
+                if twirl == 0:
+                    actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / pathList[tmp-1] },)
+                    print((((359 - pathList[tmp-1]) % 360) + 1))
+                    print((((359 - pathList[tmp]) % 360) + 1))
+                else:
+                    actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / (((359 - pathList[tmp-1]) % 360) + 1) },)
+                    print(2)
+            else:
+                if twirl == 0:
+                    actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / pathList[tmp-1] },)
+                    print(3)
+                    
+                else:
+                    actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / (((359 - pathList[tmp-1]) % 360) + 1) },)
+                    print(4)
+            print('--')
+            direction += 1
+            twirl = 1
     tmp += 1
-print(actions)
+#print(actions)
 
 settings = data['settings']
 settings['madewith'] = 'BPM Multiplier by PAPER_PPT_'
@@ -52,6 +83,6 @@ filedata['pathData'] = pathData
 filedata['settings'] = settings
 filedata['actions'] = actions
 
-print(json.dumps(filedata))
+#print(json.dumps(filedata))
 file = open('multiplied.adofai', mode='w')
 file.write(json.dumps(filedata, indent=4))
