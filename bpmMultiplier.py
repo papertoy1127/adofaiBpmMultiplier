@@ -13,12 +13,6 @@ def ifNotOneAppend(item, *target):
     if item['bpmMultiplier'] != 1:
         return paperlib.append(item, target[0])
 
-test = []
-
-print(ifNotOneAppend({'bpmMultiplier': 2}, []))
-
-
-
 theAngle = {
     'R': 0,
     'J': 30,
@@ -127,6 +121,13 @@ class MyApp(QWidget):
                     print('Warning: Unsupported angle! ({})'.format(e))
                     pathList.append(180)
             actions = data['actions']
+            j = 0
+            print(actions)
+            for i in list(actions):
+                print(i)
+                if i['eventType'] == 'Twirl':
+                    del actions[j]
+                j += 1
             tmp = 0
             twirl = 0
             direction = 0
@@ -189,6 +190,7 @@ class MyApp(QWidget):
             #print(actions)
 
             settings = data['settings']
+            print(settings)
             settings['madewith'] = 'BPM Multiplier by PAPER_PPT_'
             filedata = {}
             filedata['pathData'] = pathData
@@ -202,7 +204,6 @@ class MyApp(QWidget):
             self.status.setText(self.dir + '_multiplied.adofai에 파일이 저장되었습니다.')
         except Exception as e:
             self.status.setText('예외 발생: {}'.format(e))
-            raise e
 
 if __name__ == '__main__':
     print('잠시만 기다리세요...')
