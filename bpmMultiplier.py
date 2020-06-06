@@ -1,4 +1,3 @@
-import paperlib
 import json
 import sys
 import os
@@ -7,17 +6,6 @@ from PyQt5.QtGui import QPalette, QColor
 
 def getAngle(pre, lat):
     return ((pre - lat + 179) % 360 + 1)
-
-def ifNotOneAppend(item, *target):
-    print(item['bpmMultiplier'])
-    if item['bpmMultiplier'] != 1:
-        return paperlib.append(item, target[0])
-
-test = []
-
-print(ifNotOneAppend({'bpmMultiplier': 2}, []))
-
-
 
 theAngle = {
     'R': 0,
@@ -91,7 +79,7 @@ class MyApp(QWidget):
         grid.addWidget(statusLabel, 2, 0)
         grid.addWidget(self.status, 2, 1)
 
-        #os.system('cls')
+        os.system('cls')
         self.setWindowTitle('Magicshape BPM Multiplier')
         self.setGeometry(300, 300, 450, 120)
         self.setFixedSize(450, 140)
@@ -132,7 +120,7 @@ class MyApp(QWidget):
             direction = 0
             for i in pathList:
                 if self.bpmMode.currentText() == '소용돌이 X':
-                    ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp]/pathList[tmp-1] }, actions)
+                    actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp]/pathList[tmp-1] },)
                 elif self.bpmMode.currentText() == '안으로 돌기':
                     if direction % 2 == 0:
                         angle = pathList[tmp]
@@ -140,23 +128,23 @@ class MyApp(QWidget):
                         angle = (((359 - pathList[tmp]) % 360) + 1)
                     if angle <= 180:
                         if direction % 2 == 0:
-                            ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp]/pathList[tmp-1] }, actions) # 기본모드
+                            actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp]/pathList[tmp-1] },) # 기본모드
                         else:
-                            ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / (((359 - pathList[tmp-1]) % 360) + 1) }, actions)
+                            actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / (((359 - pathList[tmp-1]) % 360) + 1) },)
                         twirl = 0
                     else:
-                        actions.append({ "floor": tmp + 1, "eventType": "Twirl" })
+                        actions.append({ "floor": tmp + 1, "eventType": "Twirl" },)
                         if direction % 2 == 0:
                             if twirl == 0:
-                                ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / pathList[tmp-1] }, actions)
+                                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / pathList[tmp-1] },)
                             else:
-                                ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / pathList[tmp-1] }, actions)
+                                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / pathList[tmp-1] },)
                         else:
                             if twirl == 0:
-                                ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / pathList[tmp-1] }, actions)
+                                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / pathList[tmp-1] },)
                                 
                             else:
-                                ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / (((359 - pathList[tmp-1]) % 360) + 1) }, actions)
+                                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / (((359 - pathList[tmp-1]) % 360) + 1) },)
                         direction += 1
                         twirl = 1
                 elif self.bpmMode.currentText() == '밖으로 돌기':
@@ -166,23 +154,23 @@ class MyApp(QWidget):
                         angle = (((359 - pathList[tmp]) % 360) + 1)
                     if angle >= 180:
                         if direction % 2 == 0:
-                            ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp]/pathList[tmp-1] }, actions) # 기본모드
+                            actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp]/pathList[tmp-1] },) # 기본모드
                         else:
-                            ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / (((359 - pathList[tmp-1]) % 360) + 1) }, actions)
+                            actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / (((359 - pathList[tmp-1]) % 360) + 1) },)
                         twirl = 0
                     else:
-                        actions.append({ "floor": tmp + 1, "eventType": "Twirl" })
+                        actions.append({ "floor": tmp + 1, "eventType": "Twirl" },)
                         if direction % 2 == 0:
                             if twirl == 0:
-                                ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / pathList[tmp-1] }, actions)
+                                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / pathList[tmp-1] },)
                             else:
-                                ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / pathList[tmp-1] }, actions)
+                                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": (((359 - pathList[tmp]) % 360) + 1) / pathList[tmp-1] },)
                         else:
                             if twirl == 0:
-                                ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / pathList[tmp-1] }, actions)
+                                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / pathList[tmp-1] },)
                                 
                             else:
-                                ifNotOneAppend({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / (((359 - pathList[tmp-1]) % 360) + 1) }, actions)
+                                actions.append({ "floor": tmp + 1, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": pathList[tmp] / (((359 - pathList[tmp-1]) % 360) + 1) },)
                         direction += 1
                         twirl = 1
                 tmp += 1
